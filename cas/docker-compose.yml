@@ -1,0 +1,29 @@
+version: '2'
+services:
+  couchbase:
+    image: couchbase:community-4.0.0
+    container_name: couchbase
+    ports:
+      - "8091:8091"
+      - "11210:11210"
+      - "11211:11211"
+      - "8092:8092"
+      - "18091:18091"
+      - "18092:18092"
+    volumes:
+      - /var/lib/couchbase:/opt/couchbase/var
+  mongodata:  
+    image: mongo:3.2
+    container_name: mongo-data-volume
+    volumes:
+      - /var/lib/mongodb/db:/data/db
+      - /var/lib/mongodb/configdb:/data/configdb
+    command: --break-mongo
+  mongo:  
+    image: mongo:3.2
+    container_name: mongo
+    volumes_from:
+      - mongodata
+    ports:
+      - "27017:27017"
+    command: --smallfiles --rest --storageEngine wiredTiger
