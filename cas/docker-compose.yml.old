@@ -10,9 +10,14 @@ services:
       - "8092:8092"
       - "18091:18091"
       - "18092:18092"
+    volumes:
+      - /var/lib/couchbase:/opt/couchbase/var
   mongodata:  
     image: mongo:3.2
     container_name: mongo-data-volume
+    volumes:
+      - /var/lib/mongodb/db:/data/db
+      - /var/lib/mongodb/configdb:/data/configdb
     command: --break-mongo
   mongo:  
     image: mongo:3.2
