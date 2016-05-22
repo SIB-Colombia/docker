@@ -5,9 +5,9 @@ MAINTAINER Valentina Grajales Olarte <valegrajales@gmail.com>
 ## Version
 ENV NEXUS_MAJOR   		3.0
 ENV NEXUS_VERSION 		3.0.0-03
-ENV NEXUS_DOMAIN			localhost
+ENV NEXUS_DOMAIN			nexus.local
 ENV NEXUS_IP_ADDRESS	192.168.11.78
-ENV SSL_PORT					18443
+ENV SSL_PORT					8443
 
 ## Packages
 RUN \
