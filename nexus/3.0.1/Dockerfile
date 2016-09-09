@@ -45,9 +45,12 @@ RUN useradd -r -u 200 -m -c "nexus role account" -d ${NEXUS_DATA} -s /bin/false 
 
 VOLUME ${NEXUS_DATA}
 
-EXPOSE 8081 18443
+EXPOSE 8081
 USER nexus
 WORKDIR /opt/sonatype/nexus
+
+COPY org.sonatype.nexus.cfg /opt/sonatype/nexus/etc/org.sonatype.nexus.cfg
+COPY jetty-https.xml /opt/sonatype/nexus/etc/jetty-https.xml
 
 ENV JAVA_MAX_MEM 1200m
 ENV JAVA_MIN_MEM 1200m
