@@ -1,6 +1,9 @@
 FROM       centos:centos7
 MAINTAINER Sonatype <cloud-ops@sonatype.com>
 
+ENV NEXUS_DOMAIN      nexus.local
+ENV NEXUS_IP_ADDRESS  192.168.11.78
+
 ENV NEXUS_DATA /nexus-data
 
 ENV NEXUS_VERSION 3.0.2-02
