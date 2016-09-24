@@ -35,7 +35,7 @@ RUN mkdir -p /opt/sonatype/nexus \
   && chown -R root:root /opt/sonatype/nexus &&\
   mkdir -p /opt/sonatype/nexus/etc/ssl &&\
   cd /opt/sonatype/nexus/etc/ssl &&\
-  /opt/java/bin/keytool -genkeypair -keystore /opt/sonatype/nexus/etc/ssl/keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.${NEXUS_DOMAIN}, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" -ext "SAN=DNS:${NEXUS_DOMAIN},IP:${NEXUS_IP_ADDRESS}" -ext "BC=ca:true"
+  /opt/java/bin/keytool -genkeypair -keystore keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.${NEXUS_DOMAIN}, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" -ext "SAN=DNS:${NEXUS_DOMAIN},IP:${NEXUS_IP_ADDRESS}" -ext "BC=ca:true"
 
 ## configure nexus runtime env
 RUN sed \
