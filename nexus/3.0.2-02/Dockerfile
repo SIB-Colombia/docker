@@ -1,35 +1,60 @@
-FROM java:8
+FROM       centos:centos7
+MAINTAINER Sonatype <cloud-ops@sonatype.com>
 
-MAINTAINER Valentina Grajales Olarte <valegrajales@gmail.com>
+ENV NEXUS_DATA /nexus-data
 
-## Version
-ENV NEXUS_MAJOR   		3.0
-ENV NEXUS_VERSION 		3.0.2-02
-ENV NEXUS_DOMAIN			nexus.local
-ENV NEXUS_IP_ADDRESS	192.168.11.78
-ENV SSL_PORT					8443
+ENV NEXUS_VERSION 3.0.2-02
 
-## Packages
-RUN \
-  mkdir -p /usr/share/nexus &&\
-  mkdir -p /var/lib/nexus   &&\
-  curl -fsSL "http://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz" | tar -zxvf - --strip-components=1 -C /usr/share/nexus &&\
-  mkdir -p /usr/share/nexus/etc/ssl &&\
-  cd /usr/share/nexus/etc/ssl &&\
-  keytool -genkeypair -keystore keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.${NEXUS_DOMAIN}, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" -ext "SAN=DNS:${NEXUS_DOMAIN},IP:${NEXUS_IP_ADDRESS}" -ext "BC=ca:true"
+ENV JAVA_HOME /opt/java
+ENV JAVA_VERSION_MAJOR 8
+ENV JAVA_VERSION_MINOR 102
+ENV JAVA_VERSION_BUILD 14
 
-## Environments
-ENV PATH /usr/share/nexus/bin:$PATH
+RUN yum install -y \
+  curl tar \
+  && yum clean all
 
-COPY org.sonatype.nexus.cfg /usr/share/nexus/etc/org.sonatype.nexus.cfg
-COPY jetty-https.xml /usr/share/nexus/etc/jetty-https.xml
+# install Oracle JRE
+RUN mkdir -p /opt \
+  && curl --fail --silent --location --retry 3 \
+  --header "Cookie: oraclelicense=accept-securebackup-cookie; " \
+  http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/server-jre-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
+  | gunzip \
+  | tar -x -C /opt \
+  && ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JAVA_HOME}
 
-EXPOSE 8081 18443
+# install nexus
+RUN mkdir -p /opt/sonatype/nexus \
+  && curl --fail --silent --location --retry 3 \
+    https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz \
+  | gunzip \
+  | tar x -C /opt/sonatype/nexus --strip-components=1 nexus-${NEXUS_VERSION} \
+  && chown -R root:root /opt/sonatype/nexus &&\
+  keytool -genkeypair -keystore /opt/sonatype/nexus/etc/ssl/keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.${NEXUS_DOMAIN}, OU=Example, O=Sonatype, L=Unspecified, ST=Unspecified, C=US" -ext "SAN=DNS:${NEXUS_DOMAIN},IP:${NEXUS_IP_ADDRESS}" -ext "BC=ca:true"
+
+## configure nexus runtime env
+RUN sed \
+    -e "s|karaf.home=.|karaf.home=/opt/sonatype/nexus|g" \
+    -e "s|karaf.base=.|karaf.base=/opt/sonatype/nexus|g" \
+    -e "s|karaf.etc=etc|karaf.etc=/opt/sonatype/nexus/etc|g" \
+    -e "s|java.util.logging.config.file=etc|java.util.logging.config.file=/opt/sonatype/nexus/etc|g" \
+    -e "s|karaf.data=data|karaf.data=${NEXUS_DATA}|g" \
+    -e "s|java.io.tmpdir=data/tmp|java.io.tmpdir=${NEXUS_DATA}/tmp|g" \
+    -i /opt/sonatype/nexus/bin/nexus.vmoptions
+
+RUN useradd -r -u 200 -m -c "nexus role account" -d ${NEXUS_DATA} -s /bin/false nexus
+
+VOLUME ${NEXUS_DATA}
+
+EXPOSE 8081
+USER nexus
+WORKDIR /opt/sonatype/nexus
+
+COPY org.sonatype.nexus.cfg /opt/sonatype/nexus/etc/org.sonatype.nexus.cfg
+COPY jetty-https.xml /opt/sonatype/nexus/etc/jetty-https.xml
 
 ENV JAVA_MAX_MEM 1200m
 ENV JAVA_MIN_MEM 1200m
 ENV EXTRA_JAVA_OPTS ""
 
-VOLUME ["/usr/share/nexus/data"]
-
-CMD ["nexus", "run"]
+CMD bin/nexus run
