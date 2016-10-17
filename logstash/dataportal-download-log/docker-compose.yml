@@ -1,0 +1,9 @@
+version: '2'
+services:
+  logstash:
+    image: logstash:2.4
+    container_name: dataportal-logs-to-elasticsearch
+    volumes:
+      - .:/config
+      - /var/log/download_occurrences_logs:/var/log/download_occurrences_logs
+    command: -f /config/dataportal-download-log.conf
