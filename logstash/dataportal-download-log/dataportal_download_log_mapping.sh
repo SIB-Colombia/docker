@@ -1,4 +1,4 @@
-curl -XDELETE 'http://$ESDBHOST:9200/logs'
+curl -XDELETE "http://$ESDBHOST:9200/logs"
 
 curl -XPUT "http://$ESDBHOST:9200/logs/" -d '
 {
@@ -93,7 +93,7 @@ curl -XPUT "http://$ESDBHOST:9200/logs/" -d '
 	}
 }'
 
-curl -XPUT 'http://$ESDBHOST:9200/logs/_mapping/dataportal_downloads' -d '
+curl -XPUT "http://$ESDBHOST:9200/logs/_mapping/dataportal_downloads" -d '
 {
 	"dataportal_downloads" :  {
 		"properties": {
@@ -116,17 +116,11 @@ curl -XPUT 'http://$ESDBHOST:9200/logs/_mapping/dataportal_downloads' -d '
 				}
 			},
 			"geoip": {
-				"type" : "object",
-				"dynamic": true,
-				"path": "full",
-				"properties": {
-					"location": {
-						"type": "geo_point",
-						"geohash": true,
-						"geohash_prefix": true,
-						"geohash_precision": 6
-					}
-				}
+				"type" : "geo_point",
+				"lat_lon": true,
+				"geohash": true,
+				"geohash_prefix": true,
+				"geohash_precision": 6
 			},
 			"level":  {
 				"type": "string",
