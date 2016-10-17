@@ -1,0 +1,10 @@
+version: '2'
+services:
+  master:
+    image: elasticsearch:2.3.4
+    ports:
+      - "9600:9200"
+    restart: always
+    container_name: es_master
+    environment:
+      - "constraint:node==sibnodo2.humboldt.org.co"

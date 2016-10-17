@@ -1,4 +1,4 @@
-FROM elasticsearch:2.4.0
+FROM elasticsearch:2.4.1
 
 RUN /usr/share/elasticsearch/bin/plugin install --batch license \
 		&& /usr/share/elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf/v2.1.1 \
