@@ -228,13 +228,6 @@ curl -XPUT "http://$ESDBHOST:9200/logs/_mapping/dataportal_downloads" -d '
 					}
 				}
 			},
-			"geoip": {
-				"type" : "geo_point",
-				"lat_lon": true,
-				"geohash": true,
-				"geohash_prefix": true,
-				"geohash_precision": 6
-			},
 			"level":  {
 				"type": "string",
 				"index": "analyzed",
