@@ -97,6 +97,119 @@ curl -XPUT "http://$ESDBHOST:9200/logs/_mapping/dataportal_downloads" -d '
 {
 	"dataportal_downloads" :  {
 		"properties": {
+			"error": {
+				"type": "object",
+				"properties": {
+					"body" :  {
+						"type": "string",
+						"index": "analyzed",
+						"fields" : {
+							"untouched": {
+								"type": "string",
+								"index": "not_analyzed"
+							},
+							"exactWords": {
+								"type": "string",
+								"analyzer": "string_lowercase"
+							},
+							"spanish": {
+								"type": "string",
+								"analyzer": "spanish_search_analyzer"
+							}
+						}
+					},
+					"displayName" :  {
+						"type": "string",
+						"index": "analyzed",
+						"fields" : {
+							"untouched": {
+								"type": "string",
+								"index": "not_analyzed"
+							},
+							"exactWords": {
+								"type": "string",
+								"analyzer": "string_lowercase"
+							},
+							"spanish": {
+								"type": "string",
+								"analyzer": "spanish_search_analyzer"
+							}
+						}
+					},
+					"message" :  {
+						"type": "string",
+						"index": "analyzed",
+						"fields" : {
+							"untouched": {
+								"type": "string",
+								"index": "not_analyzed"
+							},
+							"exactWords": {
+								"type": "string",
+								"analyzer": "string_lowercase"
+							},
+							"spanish": {
+								"type": "string",
+								"analyzer": "spanish_search_analyzer"
+							}
+						}
+					},
+					"msg" :  {
+						"type": "string",
+						"index": "analyzed",
+						"fields" : {
+							"untouched": {
+								"type": "string",
+								"index": "not_analyzed"
+							},
+							"exactWords": {
+								"type": "string",
+								"analyzer": "string_lowercase"
+							},
+							"spanish": {
+								"type": "string",
+								"analyzer": "spanish_search_analyzer"
+							}
+						}
+					},
+					"path" :  {
+						"type": "string",
+						"index": "analyzed",
+						"fields" : {
+							"untouched": {
+								"type": "string",
+								"index": "not_analyzed"
+							},
+							"exactWords": {
+								"type": "string",
+								"analyzer": "string_lowercase"
+							},
+							"spanish": {
+								"type": "string",
+								"analyzer": "spanish_search_analyzer"
+							}
+						}
+					},
+					"response" :  {
+						"type": "string",
+						"index": "analyzed",
+						"fields" : {
+							"untouched": {
+								"type": "string",
+								"index": "not_analyzed"
+							},
+							"exactWords": {
+								"type": "string",
+								"analyzer": "string_lowercase"
+							},
+							"spanish": {
+								"type": "string",
+								"analyzer": "spanish_search_analyzer"
+							}
+						}
+					}
+				}
+			},
 			"reason":  {
 				"type": "string",
 				"index": "analyzed",
