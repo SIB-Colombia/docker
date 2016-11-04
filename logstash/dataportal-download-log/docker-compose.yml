@@ -1,7 +1,7 @@
 version: '2'
 services:
   logstash:
-    image: logstash:2.4
+    image: logstash:5.0.0-1
     container_name: dataportal-logs-to-elasticsearch
     volumes:
       - .:/config
